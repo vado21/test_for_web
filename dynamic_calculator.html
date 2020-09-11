@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<!--Eduardo Andre Martinez Romero A00819264-->
+
+<head>
+    <link rel="stylesheet" href="css/dynamic_calculator.css">
+    <script>
+        var lista = new Map();
+        var Total = 0;
+        // DOMContentLoaded wait until all dom is loaded, check the docs in below link
+        // https://developer.mozilla.org/en-US/docs/Web/API/Document/DOMContentLoaded_event
+        document.addEventListener("DOMContentLoaded", (_) => {
+            let addItem = () => {
+                var Nombre = document.getElementById("item-name").value;
+                var Precio = document.getElementById("item-value").value;
+                if (isNaN(Precio) == false) {
+                    Precio = parseFloat(Precio);
+                    if (Precio >= 0 && Nombre.length > 0) {
+                        document.getElementById("container").className = "noColor";
+                        lista.set(Nombre, Precio);
+                        Total = Total + Precio;
+                        var listahtml = document.getElementById("lista");
+                        var elementoli = document.createElement("li");
+                        var Texto = document.createTextNode(Nombre + ": " + String(Precio) + "   ");
+                        elementoli.appendChild(Texto);
+                        listahtml.appendChild(elementoli);
+                        var boton = document.createElement("button");
+                        var TextoBoton = document.createTextNode("Borrar-Item");
+                        boton.appendChild(TextoBoton);
+                        ///Funcion remover objeto
+                        boton.onclick = function() {
+                            var listul = document.getElementById("lista");
+                            var listelement = document.getElementById("idElem-" + Nombre);
+                            listul.removeChild(listelement);
+                            Total = Total - Precio;
+                            document.getElementById("total").innerHTML = "Total : " + String(Total);
+                        };
+                        elementoli.appendChild(boton);
+                        elementoli.setAttribute("id", "idElem-" + Nombre);
+                        document.getElementById("total").innerHTML = "Total : " + String(Total);
+                    } else {
+                        document.getElementById("container").className = "color_red";
+                    }
+                } else {
+                    document.getElementById("container").className = "color_red";
+                }
+            }
+            document.getElementById("add-item").addEventListener("click", addItem);
+        });
+    </script>
+</head>
+
+<body>
+    <div id="container" class="noColor">
+        item: <input type="text" id="item-name"> value: <input type="text" id="item-value">
+        <button id="add-item"> add</button>
+    </div>
+    <ul id="lista">
+    </ul>
+    <div id="total">Total:0</div>
+    <script>
+        function eraseItem(idItem) {
+            //var Item_eliminar = idItem.substring(7, idItem.lenght() - 7);
+            var listul = document.getElementById("lista");
+            var listelement = document.getElementById("idElem-" + idItem);
+            listul.removeChild(listelement);
+        }
+    </script>
+</body>
+
+</html>
