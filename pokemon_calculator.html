@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<!--Eduardo Andre Martinez Romero A00819264-->
+
+<head>
+    <link rel="stylesheet" href="css/dynamic_calculator.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        var lista = new Map();
+        var Total = 0;
+        // DOMContentLoaded wait until all dom is loaded, check the docs in below link
+        // https://developer.mozilla.org/en-US/docs/Web/API/Document/DOMContentLoaded_event
+        document.addEventListener("DOMContentLoaded", (_) => {
+            let addItem = () => {
+                var Nombre = document.getElementById("item-name").value;
+                //var Precio = document.getElementById("item-value").value;
+                var Precio;
+                var Imagenid;
+                if (Nombre.length > 0) {
+                    axios.get(`https://pokeapi.co/api/v2/pokemon/${Nombre}`)
+                        .then(response => {
+                            const pokemon = response.data;
+                            Imagenid = pokemon.id.toString();
+                            Precio = parseFloat(pokemon.weight);
+                            document.getElementById("container").className = "noColor";
+                            lista.set(Nombre, Precio);
+                            Total = Total + Precio;
+                            var listahtml = document.getElementById("lista");
+                            var elementoli = document.createElement("li");
+                            var Texto = document.createTextNode(Nombre + ": " + String(Precio) + "   ");
+                            elementoli.appendChild(Texto);
+                            listahtml.appendChild(elementoli);
+                            var boton = document.createElement("button");
+                            var TextoBoton = document.createTextNode("Borrar-Item");
+                            boton.appendChild(TextoBoton);
+                            ///Funcion remover objeto
+                            boton.onclick = function() {
+                                var listul = document.getElementById("lista");
+                                var listelement = document.getElementById("idElem-" + Nombre);
+                                listul.removeChild(listelement);
+                                Total = Total - Precio;
+                                document.getElementById("total").innerHTML = "Total : " + String(Total);
+                            };
+                            elementoli.appendChild(boton);
+                            console.log(Imagenid);
+                            const pad = '000';
+                            var formattedIndex = pad.substring(0, pad.length - Imagenid.length) + Imagenid;
+                            console.log(formattedIndex);
+                            var imagen = document.createElement("img");
+                            imagen.setAttribute("src", "https://assets.pokemon.com/assets/cms2/img/pokedex/detail/" + formattedIndex.toString() + ".png");
+                            elementoli.appendChild(imagen);
+                            elementoli.setAttribute("id", "idElem-" + Nombre);
+                            document.getElementById("total").innerHTML = "Total : " + String(Total);
+
+                        })
+                        .catch(error => {
+                            document.getElementById("container").className = "color_red";
+                            window.alert("Pokemon no existe");
+                        })
+                } else {
+                    document.getElementById("container").className = "color_red";
+                }
+
+            }
+            document.getElementById("add-item").addEventListener("click", addItem);
+        });
+    </script>
+</head>
+
+<body>
+    <div id="container" class="noColor">
+        pokemon: <input type="text" id="item-name">
+        <button id="add-item"> add</button>
+    </div>
+    <ul id="lista">
+    </ul>
+    <div id="total">Total:0</div>
+    <script>
+        function eraseItem(idItem) {
+            //var Item_eliminar = idItem.substring(7, idItem.lenght() - 7);
+            var listul = document.getElementById("lista");
+            var listelement = document.getElementById("idElem-" + idItem);
+            listul.removeChild(listelement);
+        }
+    </script>
+</body>
+
+</html>
